@@ -17,7 +17,8 @@
 | 🔗 **[TG] Telegram Community** | Kết nối cộng đồng hỗ trợ |
 | ⚙️ **[29] Services Optimizer** | Quản lý dịch vụ chi tiết (từ Platinum 7.3) |
 | 🎮 **[30] Roblox Optimizer** | Tối ưu FPS Roblox bằng FFlags |
-| �  **[77] Kiểm tra Tweaks** | Chọn từng dịch vụ hoặc tắt tất cả |
+| 💾 **[31] Backup Dữ liệu** | Backup Documents, Game Saves, Registry, Drivers |
+| 🔍 **[77] Kiểm tra Tweaks** | Chọn từng dịch vụ hoặc tắt tất cả |
 | 💾 **RAM Optimizer** | 25 bước tối ưu (từ Platinum 7.3) |
 | 🌐 **Network Optimizer** | 20 bước tối ưu (từ Platinum 7.3) |
 
@@ -652,6 +653,48 @@ Hoặc: Settings > System > About > System Protection > System Restore
 **Luu y:**
 - Khoi dong lai Roblox sau khi ap dung
 - Khi Roblox update, co the can ap dung lai FFlags
+
+---
+
+### [31] BACKUP DU LIEU
+**Muc dich:** Sao luu du lieu quan trong truoc khi toi uu
+**Menu con:**
+
+| Option | Chuc nang |
+|--------|-----------|
+| [1] | Backup Documents, Desktop, Downloads |
+| [2] | Backup Game Saves (Roblox, Minecraft, Valorant, etc.) |
+| [3] | Backup Registry quan trong |
+| [4] | Backup Drivers |
+| [5] | Backup tat ca (1+2+3+4) |
+| [6] | Mo thu muc Backup |
+
+**Game Saves duoc ho tro:**
+- Roblox (toan bo thu muc)
+- Minecraft (saves, resourcepacks, shaderpacks)
+- Valorant (Config)
+- Fortnite (Config)
+- GTA V (Rockstar Games)
+- League of Legends
+- Steam userdata
+- Epic Games
+
+**Registry duoc backup:**
+- HKLM CurrentVersion
+- Services
+- Network (Tcpip)
+- Power Settings
+- GPU Settings
+- User Settings (HKCU)
+
+**Duong dan backup:**
+```
+C:\GL-TWEAK_Backup\
+├── UserData_YYYYMMDD\
+├── GameSaves_YYYYMMDD\
+├── Registry_YYYYMMDD\
+└── Drivers_YYYYMMDD\
+```
 
 ---
 

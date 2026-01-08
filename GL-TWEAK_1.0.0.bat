@@ -100,6 +100,7 @@ echo  ^|                         === TIEN ICH ===                               
 echo  +==============================================================================+
 echo  ^|   [77] KIEM TRA TWEAKS (Goi y)       [88] CHAY TAT CA TOI UU (Tu dong)       ^|
 echo  ^|   [99] FIXERS - SUA LOI              [29] SERVICES OPTIMIZER (Moi)           ^|
+echo  ^|   [31] BACKUP DU LIEU                                                        ^|
 echo  +==============================================================================+
 echo  ^|                         === CONG DONG ===                                    ^|
 echo  +==============================================================================+
@@ -140,6 +141,7 @@ if "%choice%"=="27" goto intel_services
 if "%choice%"=="28" goto amd_services
 if "%choice%"=="29" goto services_optimizer_menu
 if "%choice%"=="30" goto roblox_optimizer
+if "%choice%"=="31" goto backup_data
 if "%choice%"=="77" goto kiem_tra_tweaks
 if "%choice%"=="88" goto chay_tat_ca
 if "%choice%"=="99" goto fixers
@@ -756,7 +758,7 @@ echo  +======================================================================+
 echo  ^|              TOI UU GPU (NVIDIA/AMD/INTEL)                           ^|
 echo  +======================================================================+
 echo.
-echo  [1] Toi uu GPU NVIDIA
+echo  [1] Toi uu GPU NVIDIA (EXTREME - tu Platinum 7.3)
 echo  [2] Toi uu GPU AMD
 echo  [3] Toi uu GPU INTEL
 echo  [0] Quay lai menu chinh
@@ -773,78 +775,153 @@ goto toi_uu_gpu
 cls
 echo.
 echo  +======================================================================+
-echo  ^|              TOI UU GPU NVIDIA                                       ^|
+echo  ^|              TOI UU GPU NVIDIA EXTREME (Platinum 7.3)                ^|
 echo  +======================================================================+
 echo.
-echo  [1/20] Xoa NVIDIA Telemetry...
+echo  [1/50] Xoa NVIDIA Telemetry...
 if exist "%ProgramFiles%\NVIDIA Corporation\Installer2\InstallerCore\NVI2.DLL" (
     rundll32 "%PROGRAMFILES%\NVIDIA Corporation\Installer2\InstallerCore\NVI2.DLL",UninstallPackage NvTelemetryContainer >NUL 2>&1
+    rundll32 "%PROGRAMFILES%\NVIDIA Corporation\Installer2\InstallerCore\NVI2.DLL",UninstallPackage NvTelemetry >NUL 2>&1
 )
+del /s %SystemRoot%\System32\DriverStore\FileRepository\NvTelemetry*.dll >NUL 2>&1
+rmdir /s /q "%ProgramFiles(x86)%\NVIDIA Corporation\NvTelemetry" 2>nul
+rmdir /s /q "%ProgramFiles%\NVIDIA Corporation\NvTelemetry" 2>nul
 
-echo  [2/20] Dat GPU Power 100%%...
+echo  [2/50] Dat GPU Power 100%%...
+powercfg /setacvalueindex SCHEME_CURRENT SUB_GRAPHICS GPUPREFERENCE 1 >nul 2>&1
+powercfg /setacvalueindex SCHEME_CURRENT SUB_GRAPHICS GPUBOOST 0 >nul 2>&1
 powercfg /setacvalueindex SCHEME_CURRENT SUB_GRAPHICS GPUPOWER 100 >nul 2>&1
+powercfg /setdcvalueindex SCHEME_CURRENT SUB_GRAPHICS GPUPREFERENCE 1 >nul 2>&1
+powercfg /setdcvalueindex SCHEME_CURRENT SUB_GRAPHICS GPUPOWER 100 >nul 2>&1
 
-echo  [3/20] Tat Gfx Preemption...
+echo  [3/50] Tat Gfx/Compute Preemption...
 REG ADD "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v EnableGfxPreemption /t REG_DWORD /d 0 /f >nul 2>&1
 REG ADD "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v EnableComputePreemption /t REG_DWORD /d 0 /f >nul 2>&1
 
-echo  [4/20] Tat Miracast...
+echo  [4/50] Tat Miracast va bat DirectFlip...
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "PlatformSupportMiracast" /t REG_DWORD /d 0 /f >nul 2>&1
-
-echo  [5/20] Bat DirectFlip...
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "ForceDirectFlip" /t REG_DWORD /d 1 /f >nul 2>&1
 
-echo  [6/20] Dat Thread Priority cao...
+echo  [5/50] Dat Thread Priority 31...
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\Parameters" /v "ThreadPriority" /t REG_DWORD /d "31" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\DXGKrnl\Parameters" /v "ThreadPriority" /t REG_DWORD /d "15" /f >nul 2>&1
 
-echo  [7/20] Bat RmGpsPsEnablePerCpuCoreDpc...
+echo  [6/50] Bat RmGpsPsEnablePerCpuCoreDpc...
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "RmGpsPsEnablePerCpuCoreDpc" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Power" /v "RmGpsPsEnablePerCpuCoreDpc" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm" /v "RmGpsPsEnablePerCpuCoreDpc" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\NVAPI" /v "RmGpsPsEnablePerCpuCoreDpc" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global\NVTweak" /v "RmGpsPsEnablePerCpuCoreDpc" /t REG_DWORD /d "1" /f >nul 2>&1
 
-echo  [8/20] Bat TurboQueue...
+echo  [7/50] Bat TurboQueue, FastVram, TexturePrecache...
 reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\System" /v "TurboQueue" /t REG_DWORD /d "1" /f >nul 2>&1
-
-echo  [9/20] Bat FastVram...
+reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\System" /v "EnableVIASBA" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\System" /v "EnableIrongateSBA" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\System" /v "EnableAGPSBA" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\System" /v "EnableAGPFW" /t REG_DWORD /d "1" /f >nul 2>&1
 reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\System" /v "FastVram" /t REG_DWORD /d "1" /f >nul 2>&1
-
-echo  [10/20] Bat TexturePrecache...
+reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\System" /v "ShadowFB" /t REG_DWORD /d "1" /f >nul 2>&1
 reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\System" /v "TexturePrecache" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\System" /v "EnableFastCopyPixels" /t REG_DWORD /d "1" /f >nul 2>&1
 
-echo  [11/20] Tat tat ca Preemption...
+echo  [8/50] Tat TAT CA Preemption (FTS)...
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnablePreemption" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "GPUPreemptionLevel" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "ComputePreemption" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableMidGfxPreemptionVGPU" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableMidBufferPreemptionForHighTdrTimeout" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableAsyncMidBufferPreemption" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableSCGMidBufferPreemption" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "PerfAnalyzeMidBufferPreemption" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableMidGfxPreemption" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableMidBufferPreemption" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableCEPreemption" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "DisableCudaContextPreemption" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "DisablePreemptionOnS3S4" /t REG_DWORD /d "1" /f >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "DisablePreemption" /t REG_DWORD /d "1" /f >nul 2>&1
 
-echo  [12/20] Tat Dynamic Pstate...
-reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global\NVTweak" /v DisableDynamicPstate /t REG_DWORD /d 1 /f >nul 2>&1
+echo  [9/50] Tat Preemption (GraphicsDrivers)...
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "RMDisablePostL2Compression" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "RmDisableRegistryCaching" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "DisableWriteCombining" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "EnablePreemption" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "GPUPreemptionLevel" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "ComputePreemption" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "MonitorLatencyTolerance" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "MonitorRefreshLatencyTolerance" /t REG_DWORD /d "0" /f >nul 2>&1
 
-echo  [13/20] Toi uu Latency...
+echo  [10/50] Tat Preemption (Scheduler)...
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Scheduler" /v "EnablePreemption" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Scheduler" /v "VsyncIdleTimeout" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Scheduler" /v "EnableYield" /t REG_DWORD /d "0" /f >nul 2>&1
+
+echo  [11/50] Tat Dynamic Pstate...
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global\NVTweak" /v DisableDynamicPstate /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global\NVTweak" /v PerfLevelSrc /t REG_DWORD /d 0x3333 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global\NVTweak" /v NoInterference /t REG_DWORD /d 1 /f >nul 2>&1
+
+echo  [12/50] Toi uu Latency...
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "ExitLatency" /t REG_DWORD /d "1" /f >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "Latency" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "LatencyToleranceDefault" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "HighPerformance" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "HighestPerformance" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "MaximumPerformancePercent" /t REG_DWORD /d "100" /f >nul 2>&1
 
-echo  [14/20] Tat Display Power Saving...
+echo  [13/50] Tat Display Power Saving...
 reg add "HKLM\SYSTEM\ControlSet001\Services\nvlddmkm\Global\NVTweak" /v "DisplayPowerSaving" /t REG_DWORD /d "0" /f >nul 2>&1
 
-echo  [15/20] Tat Scheduler Preemption...
-reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Scheduler" /v "EnablePreemption" /t REG_DWORD /d "0" /f >nul 2>&1
-
-echo  [16/20] Dat High Performance...
-reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "HighPerformance" /t REG_DWORD /d "1" /f >nul 2>&1
-
-echo  [17/20] Xoa NVIDIA cache...
-del /q "%localappdata%\NVIDIA\*" /s >nul 2>&1
-
-echo  [18/20] Tat Write Combining...
-reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "DisableWriteCombining" /t REG_DWORD /d "1" /f >nul 2>&1
-
-echo  [19/20] Tat Logging...
+echo  [14/50] Tat Logging...
 reg add "HKLM\SYSTEM\ControlSet001\Services\nvlddmkm" /v "LogWarningEntries" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\ControlSet001\Services\nvlddmkm" /v "LogPagingEntries" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\ControlSet001\Services\nvlddmkm" /v "LogEventEntries" /t REG_DWORD /d "0" /f >nul 2>&1
 reg add "HKLM\SYSTEM\ControlSet001\Services\nvlddmkm" /v "LogErrorEntries" /t REG_DWORD /d "0" /f >nul 2>&1
 
-echo  [20/20] Ap dung Power Scheme...
+echo  [15/50] Toi uu TDR...
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "TdrLevel" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "TdrDelay" /t REG_DWORD /d "60" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "TdrDdiDelay" /t REG_DWORD /d "60" /f >nul 2>&1
+
+echo  [16/50] Toi uu Class 0000...
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "DisableDynamicPstate" /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "PerfLevelSrc" /t REG_DWORD /d 0x3333 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "PerformanceLevel" /t REG_DWORD /d 3 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "EnablePowerManagement" /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "DisablePowerManagement" /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "MessageSignaledInterrupts" /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "MSISupported" /t REG_DWORD /d 1 /f >nul 2>&1
+
+echo  [17/50] Toi uu NvControlPanel...
+reg add "HKCU\Software\NVIDIA Corporation\Global\NvControlPanel" /v "PowerMizerDefault" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKCU\Software\NVIDIA Corporation\Global\NvControlPanel" /v "PowerMizerLevel" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKCU\Software\NVIDIA Corporation\Global\NvControlPanel" /v "VsyncBehavior" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKCU\Software\NVIDIA Corporation\Global\NvControlPanel" /v "ThreadedOptimization" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKCU\Software\NVIDIA Corporation\Global\NvControlPanel" /v "MaxPrerenderedFrames" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKCU\Software\NVIDIA Corporation\Global\NvControlPanel" /v "FrameRateLimiter" /t REG_DWORD /d "0" /f >nul 2>&1
+
+echo  [18/50] Bat HAGS...
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "HwSchMode" /t REG_DWORD /d 2 /f >nul 2>&1
+
+echo  [19/50] Toi uu Frame Latency...
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "FrameQueueMode" /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "MaxFrameLatency" /t REG_DWORD /d 1 /f >nul 2>&1
+
+echo  [20/50] Tat PCIe ASPM...
+powercfg -setacvalueindex SCHEME_CURRENT SUB_PCIEXPRESS ASPM 0 >nul 2>&1
+powercfg -setdcvalueindex SCHEME_CURRENT SUB_PCIEXPRESS ASPM 0 >nul 2>&1
+
+echo  [21/50] Xoa NVIDIA cache...
+del /q "%localappdata%\NVIDIA\DXCache\*" >nul 2>&1
+del /q "%localappdata%\NVIDIA\GLCache\*" >nul 2>&1
+del /q "%ProgramData%\NVIDIA Corporation\Drs\nvdrsdb0.bin" >nul 2>&1
+del /q "%ProgramData%\NVIDIA Corporation\Drs\nvdrsdb1.bin" >nul 2>&1
+
+echo  [22/50] Ap dung Power Scheme...
 powercfg -setactive SCHEME_CURRENT >nul 2>&1
 
 echo.
-echo  [THANH CONG] Da toi uu GPU NVIDIA!
-echo  [%DATE% %TIME%] Toi uu GPU NVIDIA >> "C:\GL-TWEAK_Logs\Log.txt"
+echo  [THANH CONG] Da toi uu GPU NVIDIA EXTREME!
+echo  [%DATE% %TIME%] Toi uu GPU NVIDIA EXTREME >> "C:\GL-TWEAK_Logs\Log.txt"
 pause
 goto menu_chinh
 
@@ -1399,7 +1476,7 @@ echo  +======================================================================+
 echo  ^|              XOA EDGE / ONEDRIVE / XBOX BLOAT                        ^|
 echo  +======================================================================+
 echo.
-echo  [1] Xoa Microsoft Edge
+echo  [1] Xoa Microsoft Edge (HOAN TOAN)
 echo  [2] Xoa OneDrive
 echo  [3] Xoa Xbox Bloat
 echo  [4] Xoa Widgets
@@ -1410,52 +1487,163 @@ echo.
 set /p edge_choice=  Nhap lua chon: 
 
 if "%edge_choice%"=="1" (
-    echo  [INFO] Dang xoa Microsoft Edge...
+    echo.
+    echo  [INFO] Dang xoa HOAN TOAN Microsoft Edge...
+    echo.
+    echo  [1/10] Dung tien trinh Edge...
+    taskkill /f /im MicrosoftEdgeUpdate.exe >nul 2>&1
     taskkill /f /im msedge.exe >nul 2>&1
+    
+    echo  [2/10] Xoa thu muc Edge...
+    rd /s /q "C:\Program Files (x86)\Microsoft\Edge" >nul 2>&1
+    rd /s /q "C:\Program Files (x86)\Microsoft\EdgeCore" >nul 2>&1
+    rd /s /q "C:\Program Files (x86)\Microsoft\EdgeUpdate" >nul 2>&1
+    rd /s /q "C:\Program Files (x86)\Microsoft\EdgeWebView" >nul 2>&1
+    rd /s /q "C:\Program Files (x86)\Microsoft\Temp" >nul 2>&1
+    
+    echo  [3/10] Xoa shortcut Edge...
+    del /f /q "%Appdata%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\Microsoft Edge.lnk" >nul 2>&1
+    del /f /q "%ProgramData%\Microsoft\Windows\Start Menu\Programs\Microsoft Edge.lnk" >nul 2>&1
+    del /f /q "%AppData%\Microsoft\Internet Explorer\Quick Launch\Microsoft Edge.lnk" >nul 2>&1
+    del /f /q "C:\Users\Public\Desktop\Microsoft Edge.lnk" >nul 2>&1
+    
+    echo  [4/10] Xoa registry Edge...
+    reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft Edge" /f >nul 2>&1
+    reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft Edge Update" /f >nul 2>&1
+    reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft EdgeWebView" /f >nul 2>&1
+    
+    echo  [5/10] Xoa Edge Dev Tools...
+    takeown /f "C:\Windows\SystemApps\Microsoft.MicrosoftEdgeDevToolsClient_8wekyb3d8bbwe" /r /d y >nul 2>&1
+    icacls "C:\Windows\SystemApps\Microsoft.MicrosoftEdgeDevToolsClient_8wekyb3d8bbwe" /grant Administrators:F /t >nul 2>&1
+    rd /s /q "C:\Windows\SystemApps\Microsoft.MicrosoftEdgeDevToolsClient_8wekyb3d8bbwe" >nul 2>&1
+    
+    echo  [6/10] Xoa Edge khoi Startup...
+    for /f "tokens=1" %%V in ('reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" 2^>nul ^| findstr /I "MicrosoftEdge"') do (
+        reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "%%V" /f >nul 2>&1
+    )
+    
+    echo  [7/10] Tat Edge Services...
+    sc config edgeupdate start=disabled >nul 2>&1
+    sc config edgeupdatem start=disabled >nul 2>&1
+    sc config MicrosoftEdgeElevationService start=disabled >nul 2>&1
+    sc stop edgeupdate >nul 2>&1
+    sc stop edgeupdatem >nul 2>&1
+    
+    echo  [8/10] Chan Edge Update...
+    reg add "HKLM\SOFTWARE\Policies\Microsoft\EdgeUpdate" /v "DoNotUpdateToEdgeWithChromium" /t REG_DWORD /d 1 /f >nul 2>&1
+    reg add "HKLM\SOFTWARE\Policies\Microsoft\EdgeUpdate" /v "UpdateDefault" /t REG_DWORD /d 0 /f >nul 2>&1
     reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "StartupBoostEnabled" /t REG_DWORD /d 0 /f >nul 2>&1
     reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "BackgroundModeEnabled" /t REG_DWORD /d 0 /f >nul 2>&1
-    reg add "HKLM\SOFTWARE\Policies\Microsoft\EdgeUpdate" /v "DoNotUpdateToEdgeWithChromium" /t REG_DWORD /d 1 /f >nul 2>&1
-    echo  [THANH CONG] Da vo hieu hoa Microsoft Edge!
+    reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "HubsSidebarEnabled" /t REG_DWORD /d 0 /f >nul 2>&1
+    
+    echo  [9/10] Xoa Edge Appx Package...
+    PowerShell -NoProfile -Command "Get-AppxPackage *Microsoft.MicrosoftEdge.Stable* | Remove-AppxPackage" >nul 2>&1
+    PowerShell -NoProfile -Command "Get-AppxPackage *Microsoft.Edge.GameAssist* | Remove-AppxPackage" >nul 2>&1
+    
+    echo  [10/10] Xoa Edge Scheduled Tasks...
+    schtasks /delete /tn "\MicrosoftEdgeUpdateTaskMachineCore" /f >nul 2>&1
+    schtasks /delete /tn "\MicrosoftEdgeUpdateTaskMachineUA" /f >nul 2>&1
+    
+    echo.
+    echo  [THANH CONG] Da xoa HOAN TOAN Microsoft Edge!
 )
 if "%edge_choice%"=="2" (
+    echo.
     echo  [INFO] Dang xoa OneDrive...
-    taskkill /f /im OneDrive.exe >nul 2>&1
+    echo.
+    echo  [1/5] Dung Explorer va OneDrive...
+    taskkill /F /IM "explorer.exe" >nul 2>&1
+    taskkill /F /IM "OneDrive.exe" >nul 2>&1
+    
+    echo  [2/5] Go cai dat OneDrive...
     if exist "%SystemRoot%\System32\OneDriveSetup.exe" "%SystemRoot%\System32\OneDriveSetup.exe" /uninstall >nul 2>&1
     if exist "%SystemRoot%\SysWOW64\OneDriveSetup.exe" "%SystemRoot%\SysWOW64\OneDriveSetup.exe" /uninstall >nul 2>&1
-    rd "%UserProfile%\OneDrive" /Q /S >nul 2>&1
-    rd "%LocalAppData%\Microsoft\OneDrive" /Q /S >nul 2>&1
+    
+    echo  [3/5] Xoa thu muc OneDrive...
+    rd /s /q "%UserProfile%\OneDrive" >nul 2>&1
+    rd /s /q "%LocalAppData%\Microsoft\OneDrive" >nul 2>&1
+    rd /s /q "%ProgramData%\Microsoft OneDrive" >nul 2>&1
+    
+    echo  [4/5] Xoa OneDrive khoi Explorer...
+    reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /t REG_DWORD /d 0 /f >nul 2>&1
+    reg add "HKCR\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /t REG_DWORD /d 0 /f >nul 2>&1
+    
+    echo  [5/5] Khoi dong lai Explorer...
+    start explorer.exe >nul 2>&1
+    
+    echo.
     echo  [THANH CONG] Da xoa OneDrive!
 )
 if "%edge_choice%"=="3" (
     echo  [INFO] Dang xoa Xbox Bloat...
     PowerShell -NoProfile -Command "Get-AppxPackage *Xbox* | Remove-AppxPackage" >nul 2>&1
+    PowerShell -NoProfile -Command "Get-AppxPackage *XboxApp* | Remove-AppxPackage" >nul 2>&1
+    PowerShell -NoProfile -Command "Get-AppxPackage *XboxGameOverlay* | Remove-AppxPackage" >nul 2>&1
+    PowerShell -NoProfile -Command "Get-AppxPackage *XboxGamingOverlay* | Remove-AppxPackage" >nul 2>&1
+    PowerShell -NoProfile -Command "Get-AppxPackage *XboxIdentityProvider* | Remove-AppxPackage" >nul 2>&1
+    PowerShell -NoProfile -Command "Get-AppxPackage *XboxSpeechToTextOverlay* | Remove-AppxPackage" >nul 2>&1
+    PowerShell -NoProfile -Command "Get-AppxPackage *Microsoft.GamingApp* | Remove-AppxPackage" >nul 2>&1
     sc config XblAuthManager start=disabled >nul 2>&1
     sc config XblGameSave start=disabled >nul 2>&1
     sc config XboxNetApiSvc start=disabled >nul 2>&1
+    sc config XboxGipSvc start=disabled >nul 2>&1
     echo  [THANH CONG] Da xoa Xbox Bloat!
 )
 if "%edge_choice%"=="4" (
     echo  [INFO] Dang xoa Widgets...
+    taskkill /F /IM WidgetService.exe >nul 2>&1
+    taskkill /F /IM Widgets.exe >nul 2>&1
     PowerShell -NoProfile -Command "Get-AppxPackage *WebExperience* | Remove-AppxPackage" >nul 2>&1
+    PowerShell -NoProfile -Command "Get-AppxPackage *MicrosoftWindows.Client.WebExperience* | Remove-AppxPackage" >nul 2>&1
     reg add "HKLM\SOFTWARE\Policies\Microsoft\Dsh" /v "AllowNewsAndInterests" /t REG_DWORD /d 0 /f >nul 2>&1
+    reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarDa" /t REG_DWORD /d 0 /f >nul 2>&1
     echo  [THANH CONG] Da xoa Widgets!
 )
 if "%edge_choice%"=="5" (
     echo  [INFO] Dang xoa Copilot...
     PowerShell -NoProfile -Command "Get-AppxPackage *Copilot* | Remove-AppxPackage" >nul 2>&1
+    PowerShell -NoProfile -Command "Get-AppxPackage *Microsoft.Windows.Ai.Copilot.Provider* | Remove-AppxPackage" >nul 2>&1
     reg add "HKCU\Software\Policies\Microsoft\Windows\WindowsCopilot" /v "TurnOffWindowsCopilot" /t REG_DWORD /d 1 /f >nul 2>&1
+    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" /v "TurnOffWindowsCopilot" /t REG_DWORD /d 1 /f >nul 2>&1
     echo  [THANH CONG] Da xoa Copilot!
 )
 if "%edge_choice%"=="6" (
-    echo  [INFO] Dang xoa tat ca bloatware...
+    echo.
+    echo  [INFO] Dang xoa TAT CA bloatware...
+    echo.
+    
+    :: Edge
+    taskkill /f /im MicrosoftEdgeUpdate.exe >nul 2>&1
     taskkill /f /im msedge.exe >nul 2>&1
-    taskkill /f /im OneDrive.exe >nul 2>&1
-    reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "StartupBoostEnabled" /t REG_DWORD /d 0 /f >nul 2>&1
+    rd /s /q "C:\Program Files (x86)\Microsoft\Edge" >nul 2>&1
+    rd /s /q "C:\Program Files (x86)\Microsoft\EdgeCore" >nul 2>&1
+    rd /s /q "C:\Program Files (x86)\Microsoft\EdgeUpdate" >nul 2>&1
+    rd /s /q "C:\Program Files (x86)\Microsoft\EdgeWebView" >nul 2>&1
+    sc config edgeupdate start=disabled >nul 2>&1
+    sc config edgeupdatem start=disabled >nul 2>&1
+    reg add "HKLM\SOFTWARE\Policies\Microsoft\EdgeUpdate" /v "DoNotUpdateToEdgeWithChromium" /t REG_DWORD /d 1 /f >nul 2>&1
+    
+    :: OneDrive
+    taskkill /F /IM "OneDrive.exe" >nul 2>&1
     if exist "%SystemRoot%\SysWOW64\OneDriveSetup.exe" "%SystemRoot%\SysWOW64\OneDriveSetup.exe" /uninstall >nul 2>&1
+    rd /s /q "%UserProfile%\OneDrive" >nul 2>&1
+    
+    :: Xbox
     PowerShell -NoProfile -Command "Get-AppxPackage *Xbox* | Remove-AppxPackage" >nul 2>&1
+    sc config XblAuthManager start=disabled >nul 2>&1
+    sc config XblGameSave start=disabled >nul 2>&1
+    sc config XboxNetApiSvc start=disabled >nul 2>&1
+    
+    :: Widgets
     PowerShell -NoProfile -Command "Get-AppxPackage *WebExperience* | Remove-AppxPackage" >nul 2>&1
+    reg add "HKLM\SOFTWARE\Policies\Microsoft\Dsh" /v "AllowNewsAndInterests" /t REG_DWORD /d 0 /f >nul 2>&1
+    
+    :: Copilot
     PowerShell -NoProfile -Command "Get-AppxPackage *Copilot* | Remove-AppxPackage" >nul 2>&1
-    echo  [THANH CONG] Da xoa tat ca bloatware!
+    reg add "HKCU\Software\Policies\Microsoft\Windows\WindowsCopilot" /v "TurnOffWindowsCopilot" /t REG_DWORD /d 1 /f >nul 2>&1
+    
+    echo.
+    echo  [THANH CONG] Da xoa TAT CA bloatware!
 )
 if "%edge_choice%"=="0" goto menu_chinh
 pause
@@ -2511,6 +2699,340 @@ echo  [INFO] Dang mo thu muc: %CLIENT_SETTINGS%
 explorer "%CLIENT_SETTINGS%"
 pause
 goto roblox_optimizer
+
+:: =====================================================
+:: 31. BACKUP DU LIEU
+:: =====================================================
+:backup_data
+cls
+echo.
+echo  +======================================================================+
+echo  ^|              BACKUP DU LIEU                                          ^|
+echo  +======================================================================+
+echo.
+echo  [1] Backup Documents, Desktop, Downloads
+echo  [2] Backup Game Saves (Roblox, Minecraft, etc.)
+echo  [3] Backup Registry quan trong
+echo  [4] Backup Drivers
+echo  [5] Backup tat ca (1+2+3+4)
+echo  [6] Mo thu muc Backup
+echo  [0] Quay lai
+echo.
+set /p backup_choice=  Nhap lua chon: 
+
+if "%backup_choice%"=="1" goto backup_user_data
+if "%backup_choice%"=="2" goto backup_game_saves
+if "%backup_choice%"=="3" goto backup_registry
+if "%backup_choice%"=="4" goto backup_drivers
+if "%backup_choice%"=="5" goto backup_all
+if "%backup_choice%"=="6" goto open_backup_folder
+if "%backup_choice%"=="0" goto menu_chinh
+goto backup_data
+
+:backup_user_data
+cls
+echo.
+echo  +======================================================================+
+echo  ^|              BACKUP DOCUMENTS, DESKTOP, DOWNLOADS                    ^|
+echo  +======================================================================+
+echo.
+
+:: Tao thu muc backup
+set "BACKUP_DIR=C:\GL-TWEAK_Backup\UserData_%DATE:~-4%%DATE:~3,2%%DATE:~0,2%"
+if not exist "%BACKUP_DIR%" mkdir "%BACKUP_DIR%" >nul 2>&1
+
+echo  [INFO] Thu muc backup: %BACKUP_DIR%
+echo.
+
+:: Backup Documents
+echo  [1/3] Dang backup Documents...
+if exist "%USERPROFILE%\Documents" (
+    robocopy "%USERPROFILE%\Documents" "%BACKUP_DIR%\Documents" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+    echo  [OK] Documents
+) else (
+    echo  [SKIP] Khong tim thay Documents
+)
+
+:: Backup Desktop
+echo  [2/3] Dang backup Desktop...
+if exist "%USERPROFILE%\Desktop" (
+    robocopy "%USERPROFILE%\Desktop" "%BACKUP_DIR%\Desktop" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+    echo  [OK] Desktop
+) else (
+    echo  [SKIP] Khong tim thay Desktop
+)
+
+:: Backup Downloads
+echo  [3/3] Dang backup Downloads...
+if exist "%USERPROFILE%\Downloads" (
+    robocopy "%USERPROFILE%\Downloads" "%BACKUP_DIR%\Downloads" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+    echo  [OK] Downloads
+) else (
+    echo  [SKIP] Khong tim thay Downloads
+)
+
+echo.
+echo  [THANH CONG] Da backup xong!
+echo  [INFO] Luu tai: %BACKUP_DIR%
+echo  [%DATE% %TIME%] Backup UserData >> "C:\GL-TWEAK_Logs\Log.txt"
+pause
+goto backup_data
+
+:backup_game_saves
+cls
+echo.
+echo  +======================================================================+
+echo  ^|              BACKUP GAME SAVES                                       ^|
+echo  +======================================================================+
+echo.
+
+set "BACKUP_DIR=C:\GL-TWEAK_Backup\GameSaves_%DATE:~-4%%DATE:~3,2%%DATE:~0,2%"
+if not exist "%BACKUP_DIR%" mkdir "%BACKUP_DIR%" >nul 2>&1
+
+echo  [INFO] Thu muc backup: %BACKUP_DIR%
+echo.
+
+:: Backup Roblox
+echo  [1/8] Dang backup Roblox...
+if exist "%LOCALAPPDATA%\Roblox" (
+    robocopy "%LOCALAPPDATA%\Roblox" "%BACKUP_DIR%\Roblox" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+    echo  [OK] Roblox
+) else (
+    echo  [SKIP] Khong tim thay Roblox
+)
+
+:: Backup Minecraft
+echo  [2/8] Dang backup Minecraft...
+if exist "%APPDATA%\.minecraft" (
+    robocopy "%APPDATA%\.minecraft\saves" "%BACKUP_DIR%\Minecraft\saves" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+    robocopy "%APPDATA%\.minecraft\resourcepacks" "%BACKUP_DIR%\Minecraft\resourcepacks" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+    robocopy "%APPDATA%\.minecraft\shaderpacks" "%BACKUP_DIR%\Minecraft\shaderpacks" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+    echo  [OK] Minecraft
+) else (
+    echo  [SKIP] Khong tim thay Minecraft
+)
+
+:: Backup Valorant
+echo  [3/8] Dang backup Valorant...
+if exist "%LOCALAPPDATA%\VALORANT\Saved" (
+    robocopy "%LOCALAPPDATA%\VALORANT\Saved\Config" "%BACKUP_DIR%\Valorant\Config" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+    echo  [OK] Valorant
+) else (
+    echo  [SKIP] Khong tim thay Valorant
+)
+
+:: Backup Fortnite
+echo  [4/8] Dang backup Fortnite...
+if exist "%LOCALAPPDATA%\FortniteGame\Saved" (
+    robocopy "%LOCALAPPDATA%\FortniteGame\Saved\Config" "%BACKUP_DIR%\Fortnite\Config" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+    echo  [OK] Fortnite
+) else (
+    echo  [SKIP] Khong tim thay Fortnite
+)
+
+:: Backup GTA V
+echo  [5/8] Dang backup GTA V...
+if exist "%USERPROFILE%\Documents\Rockstar Games\GTA V" (
+    robocopy "%USERPROFILE%\Documents\Rockstar Games\GTA V" "%BACKUP_DIR%\GTAV" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+    echo  [OK] GTA V
+) else (
+    echo  [SKIP] Khong tim thay GTA V
+)
+
+:: Backup League of Legends
+echo  [6/8] Dang backup League of Legends...
+if exist "%USERPROFILE%\Documents\League of Legends" (
+    robocopy "%USERPROFILE%\Documents\League of Legends" "%BACKUP_DIR%\LeagueOfLegends" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+    echo  [OK] League of Legends
+) else (
+    echo  [SKIP] Khong tim thay League of Legends
+)
+
+:: Backup Steam Cloud (local)
+echo  [7/8] Dang backup Steam userdata...
+for /d %%i in ("C:\Program Files (x86)\Steam\userdata\*") do (
+    robocopy "%%i" "%BACKUP_DIR%\Steam\userdata\%%~nxi" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+)
+if exist "%BACKUP_DIR%\Steam" (
+    echo  [OK] Steam userdata
+) else (
+    echo  [SKIP] Khong tim thay Steam
+)
+
+:: Backup Epic Games saves
+echo  [8/8] Dang backup Epic Games...
+if exist "%LOCALAPPDATA%\EpicGamesLauncher\Saved" (
+    robocopy "%LOCALAPPDATA%\EpicGamesLauncher\Saved" "%BACKUP_DIR%\EpicGames" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+    echo  [OK] Epic Games
+) else (
+    echo  [SKIP] Khong tim thay Epic Games
+)
+
+echo.
+echo  [THANH CONG] Da backup game saves xong!
+echo  [INFO] Luu tai: %BACKUP_DIR%
+echo  [%DATE% %TIME%] Backup GameSaves >> "C:\GL-TWEAK_Logs\Log.txt"
+pause
+goto backup_data
+
+:backup_registry
+cls
+echo.
+echo  +======================================================================+
+echo  ^|              BACKUP REGISTRY QUAN TRONG                              ^|
+echo  +======================================================================+
+echo.
+
+set "BACKUP_DIR=C:\GL-TWEAK_Backup\Registry_%DATE:~-4%%DATE:~3,2%%DATE:~0,2%"
+if not exist "%BACKUP_DIR%" mkdir "%BACKUP_DIR%" >nul 2>&1
+
+echo  [INFO] Thu muc backup: %BACKUP_DIR%
+echo.
+
+echo  [1/6] Dang backup HKLM\SOFTWARE...
+reg export "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion" "%BACKUP_DIR%\HKLM_CurrentVersion.reg" /y >nul 2>&1
+echo  [OK] CurrentVersion
+
+echo  [2/6] Dang backup Services...
+reg export "HKLM\SYSTEM\CurrentControlSet\Services" "%BACKUP_DIR%\Services.reg" /y >nul 2>&1
+echo  [OK] Services
+
+echo  [3/6] Dang backup Network...
+reg export "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip" "%BACKUP_DIR%\Tcpip.reg" /y >nul 2>&1
+echo  [OK] Network (Tcpip)
+
+echo  [4/6] Dang backup Power Settings...
+reg export "HKLM\SYSTEM\CurrentControlSet\Control\Power" "%BACKUP_DIR%\Power.reg" /y >nul 2>&1
+echo  [OK] Power Settings
+
+echo  [5/6] Dang backup GPU Settings...
+reg export "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}" "%BACKUP_DIR%\GPU.reg" /y >nul 2>&1
+echo  [OK] GPU Settings
+
+echo  [6/6] Dang backup User Settings...
+reg export "HKCU\Software\Microsoft\Windows\CurrentVersion" "%BACKUP_DIR%\HKCU_CurrentVersion.reg" /y >nul 2>&1
+reg export "HKCU\Control Panel" "%BACKUP_DIR%\ControlPanel.reg" /y >nul 2>&1
+echo  [OK] User Settings
+
+echo.
+echo  [THANH CONG] Da backup registry xong!
+echo  [INFO] Luu tai: %BACKUP_DIR%
+echo  [LUU Y] De khoi phuc, double-click vao file .reg
+echo  [%DATE% %TIME%] Backup Registry >> "C:\GL-TWEAK_Logs\Log.txt"
+pause
+goto backup_data
+
+:backup_drivers
+cls
+echo.
+echo  +======================================================================+
+echo  ^|              BACKUP DRIVERS                                          ^|
+echo  +======================================================================+
+echo.
+
+set "BACKUP_DIR=C:\GL-TWEAK_Backup\Drivers_%DATE:~-4%%DATE:~3,2%%DATE:~0,2%"
+if not exist "%BACKUP_DIR%" mkdir "%BACKUP_DIR%" >nul 2>&1
+
+echo  [INFO] Thu muc backup: %BACKUP_DIR%
+echo  [INFO] Dang export drivers... (co the mat vai phut)
+echo.
+
+:: Export drivers bang DISM
+dism /online /export-driver /destination:"%BACKUP_DIR%" >nul 2>&1
+
+if %errorlevel%==0 (
+    echo  [THANH CONG] Da backup drivers xong!
+    echo  [INFO] Luu tai: %BACKUP_DIR%
+    echo.
+    echo  [HUONG DAN KHOI PHUC]
+    echo  1. Mo Device Manager
+    echo  2. Click phai vao thiet bi can cai driver
+    echo  3. Chon "Update driver" ^> "Browse my computer"
+    echo  4. Chon thu muc: %BACKUP_DIR%
+) else (
+    echo  [LOI] Khong the backup drivers!
+)
+
+echo  [%DATE% %TIME%] Backup Drivers >> "C:\GL-TWEAK_Logs\Log.txt"
+pause
+goto backup_data
+
+:backup_all
+cls
+echo.
+echo  +======================================================================+
+echo  ^|              BACKUP TAT CA DU LIEU                                   ^|
+echo  +======================================================================+
+echo.
+echo  [CANH BAO] Qua trinh nay co the mat nhieu thoi gian!
+echo.
+set /p confirm=  Ban co chac chan muon tiep tuc? (Y/N): 
+if /i not "%confirm%"=="Y" goto backup_data
+
+echo.
+echo  === BUOC 1/4: BACKUP USER DATA ===
+call :backup_user_data_silent
+
+echo  === BUOC 2/4: BACKUP GAME SAVES ===
+call :backup_game_saves_silent
+
+echo  === BUOC 3/4: BACKUP REGISTRY ===
+call :backup_registry_silent
+
+echo  === BUOC 4/4: BACKUP DRIVERS ===
+call :backup_drivers_silent
+
+echo.
+echo  +======================================================================+
+echo  ^|              HOAN TAT BACKUP TAT CA!                                 ^|
+echo  +======================================================================+
+echo.
+echo  [INFO] Tat ca backup duoc luu tai: C:\GL-TWEAK_Backup\
+echo  [%DATE% %TIME%] Backup All >> "C:\GL-TWEAK_Logs\Log.txt"
+pause
+goto backup_data
+
+:backup_user_data_silent
+set "BACKUP_DIR=C:\GL-TWEAK_Backup\UserData_%DATE:~-4%%DATE:~3,2%%DATE:~0,2%"
+if not exist "%BACKUP_DIR%" mkdir "%BACKUP_DIR%" >nul 2>&1
+if exist "%USERPROFILE%\Documents" robocopy "%USERPROFILE%\Documents" "%BACKUP_DIR%\Documents" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+if exist "%USERPROFILE%\Desktop" robocopy "%USERPROFILE%\Desktop" "%BACKUP_DIR%\Desktop" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+if exist "%USERPROFILE%\Downloads" robocopy "%USERPROFILE%\Downloads" "%BACKUP_DIR%\Downloads" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+echo  [OK] User Data
+goto :eof
+
+:backup_game_saves_silent
+set "BACKUP_DIR=C:\GL-TWEAK_Backup\GameSaves_%DATE:~-4%%DATE:~3,2%%DATE:~0,2%"
+if not exist "%BACKUP_DIR%" mkdir "%BACKUP_DIR%" >nul 2>&1
+if exist "%LOCALAPPDATA%\Roblox" robocopy "%LOCALAPPDATA%\Roblox" "%BACKUP_DIR%\Roblox" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+if exist "%APPDATA%\.minecraft\saves" robocopy "%APPDATA%\.minecraft\saves" "%BACKUP_DIR%\Minecraft\saves" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+if exist "%LOCALAPPDATA%\VALORANT\Saved\Config" robocopy "%LOCALAPPDATA%\VALORANT\Saved\Config" "%BACKUP_DIR%\Valorant\Config" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+if exist "%LOCALAPPDATA%\FortniteGame\Saved\Config" robocopy "%LOCALAPPDATA%\FortniteGame\Saved\Config" "%BACKUP_DIR%\Fortnite\Config" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+if exist "%USERPROFILE%\Documents\Rockstar Games\GTA V" robocopy "%USERPROFILE%\Documents\Rockstar Games\GTA V" "%BACKUP_DIR%\GTAV" /E /R:1 /W:1 /NFL /NDL /NJH /NJS >nul 2>&1
+echo  [OK] Game Saves
+goto :eof
+
+:backup_registry_silent
+set "BACKUP_DIR=C:\GL-TWEAK_Backup\Registry_%DATE:~-4%%DATE:~3,2%%DATE:~0,2%"
+if not exist "%BACKUP_DIR%" mkdir "%BACKUP_DIR%" >nul 2>&1
+reg export "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion" "%BACKUP_DIR%\HKLM_CurrentVersion.reg" /y >nul 2>&1
+reg export "HKLM\SYSTEM\CurrentControlSet\Services" "%BACKUP_DIR%\Services.reg" /y >nul 2>&1
+reg export "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip" "%BACKUP_DIR%\Tcpip.reg" /y >nul 2>&1
+reg export "HKCU\Software\Microsoft\Windows\CurrentVersion" "%BACKUP_DIR%\HKCU_CurrentVersion.reg" /y >nul 2>&1
+echo  [OK] Registry
+goto :eof
+
+:backup_drivers_silent
+set "BACKUP_DIR=C:\GL-TWEAK_Backup\Drivers_%DATE:~-4%%DATE:~3,2%%DATE:~0,2%"
+if not exist "%BACKUP_DIR%" mkdir "%BACKUP_DIR%" >nul 2>&1
+dism /online /export-driver /destination:"%BACKUP_DIR%" >nul 2>&1
+echo  [OK] Drivers
+goto :eof
+
+:open_backup_folder
+if not exist "C:\GL-TWEAK_Backup" mkdir "C:\GL-TWEAK_Backup" >nul 2>&1
+explorer "C:\GL-TWEAK_Backup"
+goto backup_data
 
 :: =====================================================
 :: THOAT

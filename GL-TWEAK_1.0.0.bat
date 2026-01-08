@@ -92,6 +92,10 @@ echo  ^|   [23] XOA SMARTSCREEN               [24] XOA LOCKAPP                  
 echo  ^|   [25] DAT GAME PRIORITY             [26] VO HIEU DRIVERS                    ^|
 echo  ^|   [27] INTEL SERVICES                [28] AMD SERVICES                       ^|
 echo  +==============================================================================+
+echo  ^|                         === GAME OPTIMIZER ===                               ^|
+echo  +==============================================================================+
+echo  ^|   [30] ROBLOX OPTIMIZER (FFlags)                                             ^|
+echo  +==============================================================================+
 echo  ^|                         === TIEN ICH ===                                     ^|
 echo  +==============================================================================+
 echo  ^|   [77] KIEM TRA TWEAKS (Goi y)       [88] CHAY TAT CA TOI UU (Tu dong)       ^|
@@ -135,6 +139,7 @@ if "%choice%"=="26" goto vo_hieu_drivers
 if "%choice%"=="27" goto intel_services
 if "%choice%"=="28" goto amd_services
 if "%choice%"=="29" goto services_optimizer_menu
+if "%choice%"=="30" goto roblox_optimizer
 if "%choice%"=="77" goto kiem_tra_tweaks
 if "%choice%"=="88" goto chay_tat_ca
 if "%choice%"=="99" goto fixers
@@ -2170,6 +2175,342 @@ if "%fix_choice%"=="10" (
 if "%fix_choice%"=="0" goto menu_chinh
 pause
 goto fixers
+
+:: =====================================================
+:: 30. ROBLOX OPTIMIZER (FFlags)
+:: =====================================================
+:roblox_optimizer
+cls
+echo.
+echo  +======================================================================+
+echo  ^|              ROBLOX OPTIMIZER - FFLAGS                               ^|
+echo  +======================================================================+
+echo.
+echo  [1] Ap dung FFlags toi uu FPS (Khuyen nghi)
+echo  [2] Ap dung FFlags Low-End PC (May yeu)
+echo  [3] Xoa FFlags (Khoi phuc mac dinh)
+echo  [4] Mo thu muc Roblox ClientSettings
+echo  [0] Quay lai
+echo.
+set /p roblox_choice=  Nhap lua chon: 
+
+if "%roblox_choice%"=="1" goto roblox_fflags_fps
+if "%roblox_choice%"=="2" goto roblox_fflags_lowend
+if "%roblox_choice%"=="3" goto roblox_fflags_remove
+if "%roblox_choice%"=="4" goto roblox_open_folder
+if "%roblox_choice%"=="0" goto menu_chinh
+goto roblox_optimizer
+
+:roblox_fflags_fps
+cls
+echo.
+echo  +======================================================================+
+echo  ^|              DANG AP DUNG FFLAGS TOI UU FPS...                       ^|
+echo  +======================================================================+
+echo.
+
+:: Tim duong dan Roblox
+set "ROBLOX_PATH="
+for /d %%i in ("%LOCALAPPDATA%\Roblox\Versions\version-*") do set "ROBLOX_PATH=%%i"
+
+if not defined ROBLOX_PATH (
+    echo  [LOI] Khong tim thay Roblox! Hay cai dat Roblox truoc.
+    pause
+    goto roblox_optimizer
+)
+
+:: Tao thu muc ClientSettings
+set "CLIENT_SETTINGS=%ROBLOX_PATH%\ClientSettings"
+if not exist "%CLIENT_SETTINGS%" mkdir "%CLIENT_SETTINGS%" >nul 2>&1
+
+echo  [INFO] Duong dan Roblox: %ROBLOX_PATH%
+echo  [INFO] Dang tao file FFlags...
+
+:: Tao file ClientAppSettings.json
+(
+echo {
+echo   "FLogNetwork": "7",
+echo   "FFlagHandleAltEnterFullscreenManually": "False",
+echo   "DFIntTaskSchedulerTargetFps": "5588562",
+echo   "DFFlagDebugRenderForceTechnologyVoxel": "True",
+echo   "FFlagDebugForceFutureIsBrightPhase3": "True",
+echo   "FIntDebugForceMSAASamples": "1",
+echo   "FIntFullscreenTitleBarTriggerDelayMillis": "18000000",
+echo   "FFlagDebugGraphicsPreferD3D11FL10": "True",
+echo   "DFIntTextureQualityOverride": "3",
+echo   "FFlagDebugGraphicsPreferD3D11": "True",
+echo   "DFFlagTextureQualityOverrideEnabled": "True",
+echo   "FFlagDisablePostFx": "True",
+echo   "FIntTerrainArraySliceSize": "0",
+echo   "DFFlagDisableDPIScale": "True",
+echo   "FIntRenderShadowIntensity": "0",
+echo   "DFFlagDebugAnalyticsSendUserId": "False",
+echo   "FFlagReportFpsAndGfxQualityPercentiles": "False",
+echo   "DFFlagAudioDeviceTelemetry": "False",
+echo   "FFlagEnableAccessibilitySettingsInExperienceMenu2": "True",
+echo   "DFIntDetectCrashEarlyPercentage": "0",
+echo   "FFlagRenderPerformanceTelemetry": "False",
+echo   "FIntMeshContentProviderForceCacheSize": "268435456",
+echo   "DFFlagDebugPauseVoxelizer": "true",
+echo   "FFlagDebugDisableTelemetryV2Counter": "True",
+echo   "FIntFRMMinGrassDistance": "0",
+echo   "DFFlagAddUserIdToSessionTracking": "False",
+echo   "FIntFRMMaxGrassDistance": "0",
+echo   "DFIntCrashUploadToBacktracePercentage": "0",
+echo   "FFlagOptimizeNetworkRouting": "True",
+echo   "DFIntGoogleAnalyticsLoadPlayerHundredth": "0",
+echo   "FFlagDebugGraphicsDisableVulkan": "True",
+echo   "DFFlagVideoCaptureServiceEnabled": "False",
+echo   "FFlagCloudsReflectOnWater": "True",
+echo   "FIntRenderEnableGlobalInstancingD3D11Percent": "100",
+echo   "DFIntCSGLevelOfDetailSwitchingDistance": "1",
+echo   "FIntTaskSchedulerAutoThreadLimit": "8",
+echo   "FFlagGraphicsCheckComputeSupport": "True",
+echo   "DFIntCrashReportingHundredthsPercentage": "0",
+echo   "FFlagDebugDisableTelemetryPoint": "True",
+echo   "DFIntLightstepHTTPTransportHundredthsPercent2": "0",
+echo   "FFlagEnableInGameMenuV3": "False",
+echo   "FFlagDontCreatePingJob": "True",
+echo   "FFlagDebugDisableTelemetryEphemeralCounter": "True",
+echo   "DFIntCSGLevelOfDetailSwitchingDistanceL23": "0",
+echo   "FFlagGraphicsEnableD3D10Compute": "True",
+echo   "FIntRenderLocalLightFadeInMs_enabled": "99999",
+echo   "FIntRenderGrassDetailStrands": "0",
+echo   "FFlagRenderCheckThreading": "True",
+echo   "FIntCameraMaxZoomDistance": "99999",
+echo   "FFlagDebugDisableTelemetryEphemeralStat": "True",
+echo   "DFFlagPredictedOOM": "False",
+echo   "FFlagDebugGraphicsDisableOpenGL": "True",
+echo   "DFIntPredictedOOMPercent": "0",
+echo   "FIntCameraFarZPlane": "600",
+echo   "FFlagEnableSoundTelemetry": "False",
+echo   "DFIntStartupTracingInfluxRollout": "0",
+echo   "FIntReportDeviceInfoRollout": "0",
+echo   "DFFlagEnableLightstepReporting2": "False",
+echo   "FFlagDebugGraphicsDisableDirect3D11": "False",
+echo   "DFFlagDebugPerfMode": "True",
+echo   "FFlagFixGraphicsQuality": "True",
+echo   "FFlagPreloadMinimalFonts": "True",
+echo   "FFlagPreloadTextureItemsOption4": "True",
+echo   "DFFlagEnableGCapsHardwareTelemetry": "False",
+echo   "DFIntNetworkPrediction": "120",
+echo   "FFlagOptimizeNetworkTransport": "True",
+echo   "FFlagWindowsLaunchAnalytics": "False",
+echo   "FFlagGlobalWindRendering": "false",
+echo   "DFFlagGpuVsCpuBoundTelemetry": "False",
+echo   "FIntUITextureMaxRenderTextureSize": "1024",
+echo   "FFlagTrackWinWebLaunchFlow": "False",
+echo   "DFFlagCrashUploadFullDumps": "False",
+echo   "FFlagRenderGpuTextureCompressor": "True",
+echo   "FFlagGpuGeometryManager7": "True",
+echo   "FFlagDebugDisableTelemetryEventIngest": "True",
+echo   "FIntRenderShadowmapBias": "0",
+echo   "DFFlagDebugEnableInterpolationVisualizer": "true",
+echo   "FFlagAddGameInstanceIdToSessionTracking": "False",
+echo   "DFFlagEphemeralCounterInfluxReportingEnabled": "False",
+echo   "DFIntDebugFRMQualityLevelOverride": "1",
+echo   "FFlagDebugDisableTelemetryV2Event": "True",
+echo   "FIntBootstrapperTelemetryReportingHundredthsPercentage": "0",
+echo   "FFlagNewLightAttenuation": "True",
+echo   "FFlagDebugDisableOTAMaterialTexture": "true",
+echo   "FFlagOptimizeServerTickRate": "True",
+echo   "DFFlagHttpCacheCleanBasedOnMemory": "True",
+echo   "FIntDefaultMeshCacheSizeMB": "256",
+echo   "FFlagAdServiceEnabled": "False",
+echo   "DFFlagQueueDataPingFromSendData": "True",
+echo   "FFlagOptimizeNetwork": "True",
+echo   "DFIntServerPhysicsUpdateRate": "60",
+echo   "FFlagLocServicePerformanceAnalyticsEnabled": "False",
+echo   "DFIntOptimizePingThreshold": "50",
+echo   "DFIntBrowserTrackerApiDeviceInitializeRolloutPercentage": "0",
+echo   "DFIntUserIdPlayerNameCacheSize": "33554432",
+echo   "FFlagAnimationClipMemCacheEnabled": "True",
+echo   "DFIntPlayerNetworkUpdateRate": "60",
+echo   "DFIntCSGLevelOfDetailSwitchingDistanceL12": "0",
+echo   "DFFlagESGamePerfMonitorEnabled": "False",
+echo   "FFlagEnableBatteryStateLogger": "False",
+echo   "DFFlagBrowserTrackerIdTelemetryEnabled": "False",
+echo   "DFIntMaxFrameBufferSize": "4",
+echo   "DFIntS2PhysicsSenderRate": "250",
+echo   "FIntTerrainOTAMaxTextureSize": "1024",
+echo   "FFlagPreloadAllFonts": "True",
+echo   "DFIntClientLightingTechnologyChangedTelemetryHundredthsPercent": "0",
+echo   "FFlagDebugDisableTelemetryV2Stat": "True",
+echo   "FFlagDisableNewIGMinDUA": "True",
+echo   "FIntLinkBrowserTrackerToDeviceRollout": "0",
+echo   "FFlagTaskSchedulerLimitTargetFpsTo2402": "False",
+echo   "FFlagDebugRenderingSetDeterministic": "True",
+echo   "FFlagCommitToGraphicsQualityFix": "True",
+echo   "DFFlagEnableFmodErrorsTelemetry": "False",
+echo   "FIntStartupInfluxHundredthsPercentage": "0",
+echo   "DFIntRakNetResendRttMultiple": "1",
+echo   "DFIntLoginTelemetryHundredthsPercent": "0",
+echo   "FIntEmotesAnimationsPerPlayerCacheSize": "16777216",
+echo   "FFlagDebugGraphicsDisableVulkan11": "True",
+echo   "FFlagEnableAdsAPI": "False",
+echo   "FIntAbuseReportScreenshotMaxSize": "0",
+echo   "DFFlagClientBaseNetworkMetrics": "False",
+echo   "FFlagEnableAccessibilitySettingsAPIV2": "True",
+echo   "FFlagFastGPULightCulling3": "True",
+echo   "DFIntWriteFullDmpPercent": "0",
+echo   "FFlagBatchAssetApi": "True",
+echo   "DFFlagAddPublicGettersForGfxQualityAndFpsForTelemCounters2": "False",
+echo   "FFlagEnableAccessibilitySettingsEffectsInExperienceChat": "True",
+echo   "FIntRobloxGuiBlurIntensity": "0",
+echo   "DFIntRaknetBandwidthPingSendEveryXSeconds": "1",
+echo   "DFIntServerTickRate": "60",
+echo   "DFIntNetworkLatencyTolerance": "1",
+echo   "DFIntPlayerNetworkUpdateQueueSize": "20",
+echo   "DFIntHttpCurlConnectionCacheSize": "134217728"
+echo }
+) > "%CLIENT_SETTINGS%\ClientAppSettings.json"
+
+echo.
+echo  [THANH CONG] Da ap dung FFlags toi uu FPS!
+echo  [INFO] File duoc luu tai: %CLIENT_SETTINGS%\ClientAppSettings.json
+echo.
+echo  [LUU Y] Khoi dong lai Roblox de ap dung thay doi.
+echo  [%DATE% %TIME%] Roblox FFlags FPS >> "C:\GL-TWEAK_Logs\Log.txt"
+pause
+goto roblox_optimizer
+
+:roblox_fflags_lowend
+cls
+echo.
+echo  +======================================================================+
+echo  ^|              DANG AP DUNG FFLAGS CHO MAY YEU...                      ^|
+echo  +======================================================================+
+echo.
+
+:: Tim duong dan Roblox
+set "ROBLOX_PATH="
+for /d %%i in ("%LOCALAPPDATA%\Roblox\Versions\version-*") do set "ROBLOX_PATH=%%i"
+
+if not defined ROBLOX_PATH (
+    echo  [LOI] Khong tim thay Roblox! Hay cai dat Roblox truoc.
+    pause
+    goto roblox_optimizer
+)
+
+set "CLIENT_SETTINGS=%ROBLOX_PATH%\ClientSettings"
+if not exist "%CLIENT_SETTINGS%" mkdir "%CLIENT_SETTINGS%" >nul 2>&1
+
+echo  [INFO] Duong dan Roblox: %ROBLOX_PATH%
+echo  [INFO] Dang tao file FFlags cho may yeu...
+
+:: FFlags cho may yeu - giam do hoa toi da
+(
+echo {
+echo   "DFIntTaskSchedulerTargetFps": "60",
+echo   "FIntDebugForceMSAASamples": "0",
+echo   "FFlagDisablePostFx": "True",
+echo   "FIntRenderShadowIntensity": "0",
+echo   "FIntFRMMinGrassDistance": "0",
+echo   "FIntFRMMaxGrassDistance": "0",
+echo   "FIntRenderGrassDetailStrands": "0",
+echo   "DFIntTextureQualityOverride": "0",
+echo   "DFFlagTextureQualityOverrideEnabled": "True",
+echo   "FIntTerrainArraySliceSize": "0",
+echo   "DFIntCSGLevelOfDetailSwitchingDistance": "0",
+echo   "DFIntCSGLevelOfDetailSwitchingDistanceL12": "0",
+echo   "DFIntCSGLevelOfDetailSwitchingDistanceL23": "0",
+echo   "DFIntCSGLevelOfDetailSwitchingDistanceL34": "0",
+echo   "FFlagGlobalWindRendering": "false",
+echo   "FFlagCloudsReflectOnWater": "False",
+echo   "FIntRenderShadowmapBias": "0",
+echo   "FIntUITextureMaxRenderTextureSize": "256",
+echo   "FIntTerrainOTAMaxTextureSize": "256",
+echo   "DFIntDebugFRMQualityLevelOverride": "1",
+echo   "FFlagDebugSkyGray": "true",
+echo   "FIntRobloxGuiBlurIntensity": "0",
+echo   "DFIntMaxFrameBufferSize": "1",
+echo   "FFlagDebugGraphicsPreferD3D11": "True",
+echo   "FFlagDebugGraphicsDisableVulkan": "True",
+echo   "FFlagDebugGraphicsDisableOpenGL": "True",
+echo   "FFlagOptimizeNetwork": "True",
+echo   "FFlagOptimizeNetworkRouting": "True",
+echo   "FFlagOptimizeNetworkTransport": "True",
+echo   "DFIntNetworkPrediction": "120",
+echo   "DFIntNetworkLatencyTolerance": "1",
+echo   "FFlagPreloadMinimalFonts": "True",
+echo   "FFlagPreloadAllFonts": "False",
+echo   "FIntDefaultMeshCacheSizeMB": "64",
+echo   "FIntMeshContentProviderForceCacheSize": "67108864",
+echo   "FFlagEnableInGameMenuV3": "False",
+echo   "FFlagDisableNewIGMinDUA": "True",
+echo   "FFlagAdServiceEnabled": "False",
+echo   "DFFlagDebugPerfMode": "True"
+echo }
+) > "%CLIENT_SETTINGS%\ClientAppSettings.json"
+
+echo.
+echo  [THANH CONG] Da ap dung FFlags cho may yeu!
+echo  [INFO] File duoc luu tai: %CLIENT_SETTINGS%\ClientAppSettings.json
+echo.
+echo  [LUU Y] Khoi dong lai Roblox de ap dung thay doi.
+echo  [%DATE% %TIME%] Roblox FFlags LowEnd >> "C:\GL-TWEAK_Logs\Log.txt"
+pause
+goto roblox_optimizer
+
+:roblox_fflags_remove
+cls
+echo.
+echo  +======================================================================+
+echo  ^|              XOA FFLAGS - KHOI PHUC MAC DINH                         ^|
+echo  +======================================================================+
+echo.
+
+:: Tim duong dan Roblox
+set "ROBLOX_PATH="
+for /d %%i in ("%LOCALAPPDATA%\Roblox\Versions\version-*") do set "ROBLOX_PATH=%%i"
+
+if not defined ROBLOX_PATH (
+    echo  [LOI] Khong tim thay Roblox!
+    pause
+    goto roblox_optimizer
+)
+
+set "CLIENT_SETTINGS=%ROBLOX_PATH%\ClientSettings"
+
+if exist "%CLIENT_SETTINGS%\ClientAppSettings.json" (
+    del "%CLIENT_SETTINGS%\ClientAppSettings.json" >nul 2>&1
+    echo  [THANH CONG] Da xoa FFlags!
+    echo  [INFO] Roblox se chay voi cai dat mac dinh.
+) else (
+    echo  [INFO] Khong tim thay file FFlags de xoa.
+)
+
+echo.
+echo  [LUU Y] Khoi dong lai Roblox de ap dung thay doi.
+echo  [%DATE% %TIME%] Roblox FFlags Removed >> "C:\GL-TWEAK_Logs\Log.txt"
+pause
+goto roblox_optimizer
+
+:roblox_open_folder
+cls
+echo.
+echo  +======================================================================+
+echo  ^|              MO THU MUC ROBLOX CLIENTSETTINGS                        ^|
+echo  +======================================================================+
+echo.
+
+:: Tim duong dan Roblox
+set "ROBLOX_PATH="
+for /d %%i in ("%LOCALAPPDATA%\Roblox\Versions\version-*") do set "ROBLOX_PATH=%%i"
+
+if not defined ROBLOX_PATH (
+    echo  [LOI] Khong tim thay Roblox!
+    pause
+    goto roblox_optimizer
+)
+
+set "CLIENT_SETTINGS=%ROBLOX_PATH%\ClientSettings"
+if not exist "%CLIENT_SETTINGS%" mkdir "%CLIENT_SETTINGS%" >nul 2>&1
+
+echo  [INFO] Dang mo thu muc: %CLIENT_SETTINGS%
+explorer "%CLIENT_SETTINGS%"
+pause
+goto roblox_optimizer
 
 :: =====================================================
 :: THOAT

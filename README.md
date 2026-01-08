@@ -16,7 +16,8 @@
 |-----------|-------|
 | 🔗 **[TG] Telegram Community** | Kết nối cộng đồng hỗ trợ |
 | ⚙️ **[29] Services Optimizer** | Quản lý dịch vụ chi tiết (từ Platinum 7.3) |
-| 🔍 **[77] Kiểm tra Tweaks** | Chọn từng dịch vụ hoặc tắt tất cả |
+| 🎮 **[30] Roblox Optimizer** | Tối ưu FPS Roblox bằng FFlags |
+| �  **[77] Kiểm tra Tweaks** | Chọn từng dịch vụ hoặc tắt tất cả |
 | 💾 **RAM Optimizer** | 25 bước tối ưu (từ Platinum 7.3) |
 | 🌐 **Network Optimizer** | 20 bước tối ưu (từ Platinum 7.3) |
 
@@ -614,6 +615,43 @@ Hoặc: Settings > System > About > System Protection > System Restore
 - DiagTrack, dmwappushservice, WSearch, SysMain
 - WerSvc, MapsBroker, lfsvc, RetailDemo
 - WdiServiceHost, WdiSystemHost, TrkWks, WalletService
+
+---
+
+### [30] ROBLOX OPTIMIZER (FFlags)
+**Muc dich:** Toi uu hieu suat Roblox bang FFlags
+**Menu con:**
+
+| Option | Chuc nang |
+|--------|-----------|
+| [1] | Ap dung FFlags toi uu FPS (Khuyen nghi) |
+| [2] | Ap dung FFlags cho may yeu (Low-End PC) |
+| [3] | Xoa FFlags (Khoi phuc mac dinh) |
+| [4] | Mo thu muc Roblox ClientSettings |
+
+**FFlags toi uu FPS bao gom:**
+- Unlock FPS (DFIntTaskSchedulerTargetFps = 5588562)
+- Tat Telemetry/Analytics (tang privacy, giam lag)
+- Tat PostFX, Shadow, Grass (tang FPS)
+- Toi uu Network (giam ping)
+- Tang cache size (load nhanh hon)
+- Uu tien D3D11 (on dinh hon Vulkan)
+
+**FFlags cho may yeu:**
+- Gioi han 60 FPS
+- Texture quality = 0
+- Tat tat ca hieu ung (shadow, grass, wind, clouds)
+- Giam cache size
+- Tat preload fonts
+
+**Duong dan file FFlags:**
+```
+%LOCALAPPDATA%\Roblox\Versions\version-xxx\ClientSettings\ClientAppSettings.json
+```
+
+**Luu y:**
+- Khoi dong lai Roblox sau khi ap dung
+- Khi Roblox update, co the can ap dung lai FFlags
 
 ---
 

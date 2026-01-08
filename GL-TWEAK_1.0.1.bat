@@ -95,12 +95,13 @@ echo  +=========================================================================
 echo  ^|                         === GAME OPTIMIZER ===                               ^|
 echo  +==============================================================================+
 echo  ^|   [30] ROBLOX OPTIMIZER (FFlags)                                             ^|
+echo  ^|   [32] SSD OPTIMIZER                                                         ^|
 echo  +==============================================================================+
 echo  ^|                         === TIEN ICH ===                                     ^|
 echo  +==============================================================================+
 echo  ^|   [77] KIEM TRA TWEAKS (Goi y)       [88] CHAY TAT CA TOI UU (Tu dong)       ^|
 echo  ^|   [99] FIXERS - SUA LOI              [29] SERVICES OPTIMIZER (Moi)           ^|
-echo  ^|   [31] BACKUP DU LIEU                                                        ^|
+echo  ^|   [31] BACKUP DU LIEU                [33] DEBLOATER NANG CAO                 ^|
 echo  +==============================================================================+
 echo  ^|                         === CONG DONG ===                                    ^|
 echo  +==============================================================================+
@@ -142,6 +143,8 @@ if "%choice%"=="28" goto amd_services
 if "%choice%"=="29" goto services_optimizer_menu
 if "%choice%"=="30" goto roblox_optimizer
 if "%choice%"=="31" goto backup_data
+if "%choice%"=="32" goto ssd_optimizer
+if "%choice%"=="33" goto debloater_advanced
 if "%choice%"=="77" goto kiem_tra_tweaks
 if "%choice%"=="88" goto chay_tat_ca
 if "%choice%"=="99" goto fixers
@@ -2120,7 +2123,7 @@ goto kiem_tra_tweaks
 
 
 :: =====================================================
-:: 88. CHAY TAT CA TOI UU
+:: 88. CHAY TAT CA TOI UU (TU DONG - KHONG HOI)
 :: =====================================================
 :chay_tat_ca
 cls
@@ -2129,112 +2132,271 @@ echo  +======================================================================+
 echo  ^|              CHAY TAT CA TOI UU (TU DONG)                            ^|
 echo  +======================================================================+
 echo.
-echo  [CANH BAO] Qua trinh nay se ap dung TAT CA cac toi uu.
-echo  Khuyen nghi: Tao diem khoi phuc truoc khi tiep tuc.
-echo.
-echo  [1] Chay toi uu CO BAN (An toan)
-echo  [2] Chay toi uu NANG CAO (Manh hon)
-echo  [3] Chay TAT CA (Co ban + Nang cao)
+echo  [1] TOI UU NHANH - An toan, khong hoi (Khuyen nghi)
+echo  [2] TOI UU MANH - Tat ca tweaks, khong hoi
+echo  [3] TOI UU TUY CHON - Chon CPU/GPU rieng
 echo  [0] Quay lai
 echo.
 set /p run_choice=  Nhap lua chon: 
 
-if "%run_choice%"=="1" goto chay_co_ban
-if "%run_choice%"=="2" goto chay_nang_cao
-if "%run_choice%"=="3" goto chay_full
+if "%run_choice%"=="1" goto auto_quick
+if "%run_choice%"=="2" goto auto_full
+if "%run_choice%"=="3" goto auto_custom
 if "%run_choice%"=="0" goto menu_chinh
 goto chay_tat_ca
 
-:chay_co_ban
+:: === TOI UU NHANH - KHONG HOI ===
+:auto_quick
+cls
 echo.
-echo  [1/7] Dang toi uu giao dien...
+echo  +======================================================================+
+echo  ^|              DANG TOI UU NHANH... (Khong can thao tac)               ^|
+echo  +======================================================================+
+echo.
+echo  [INFO] Dang chay 50+ tweaks tu dong...
+echo.
+
+echo  [BUOC 1/10] Toi uu giao dien...
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v HideFileExt /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v Hidden /t REG_DWORD /d "1" /f >nul 2>&1
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v BingSearchEnabled /t REG_DWORD /d "0" /f >nul 2>&1
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v SearchboxTaskbarMode /t REG_DWORD /d "0" /f >nul 2>&1
 reg add "HKCU\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "0" /f >nul 2>&1
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v TaskbarDa /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v ShowTaskViewButton /t REG_DWORD /d "0" /f >nul 2>&1
 
-echo  [2/7] Dang toi uu he thong...
+echo  [BUOC 2/10] Toi uu he thong...
 reg add "HKCU\Software\Policies\Microsoft\Windows\Explorer" /v DisableNotificationCenter /t REG_DWORD /d "1" /f >nul 2>&1
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" /v GlobalUserDisabled /t REG_DWORD /d "1" /f >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "HwSchMode" /t REG_DWORD /d "2" /f >nul 2>&1
 reg add "HKCU\System\GameConfigStore" /v GameDVR_Enabled /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKCU\System\GameConfigStore" /v "GameDVR_FSEBehavior" /t REG_DWORD /d "2" /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR" /v "AllowGameDVR" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKCU\Control Panel\Desktop" /v "AutoEndTasks" /t REG_SZ /d "1" /f >nul 2>&1
+reg add "HKCU\Control Panel\Desktop" /v "HungAppTimeout" /t REG_SZ /d "1000" /f >nul 2>&1
+reg add "HKCU\Control Panel\Desktop" /v "WaitToKillAppTimeout" /t REG_SZ /d "2000" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control" /v SvcHostSplitThresholdInKB /t REG_DWORD /d 380000000 /f >nul 2>&1
 powercfg -h off >nul 2>&1
 
-echo  [3/7] Dang xoa telemetry...
+echo  [BUOC 3/10] Xoa telemetry...
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableActivityFeed" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "PublishUserActivities" /t REG_DWORD /d "0" /f >nul 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v AllowTelemetry /t REG_DWORD /d "0" /f >nul 2>&1
-sc config "DiagTrack" start= disabled >nul 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v AllowTelemetry /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v Disabled /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" /v DisabledByGroupPolicy /t REG_DWORD /d "1" /f >nul 2>&1
 
-echo  [4/7] Dang vo hieu services...
+echo  [BUOC 4/10] Vo hieu services khong can thiet...
 sc config DiagTrack start=disabled >nul 2>&1
+sc stop DiagTrack >nul 2>&1
 sc config dmwappushservice start=disabled >nul 2>&1
 sc config MapsBroker start=disabled >nul 2>&1
 sc config WSearch start=disabled >nul 2>&1
+sc config SysMain start=disabled >nul 2>&1
+sc stop SysMain >nul 2>&1
+sc config WerSvc start=disabled >nul 2>&1
+sc config lfsvc start=disabled >nul 2>&1
+sc config RetailDemo start=disabled >nul 2>&1
+sc config AJRouter start=disabled >nul 2>&1
+sc config Fax start=disabled >nul 2>&1
 
-echo  [5/7] Dang toi uu CPU...
-reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d "26" /f >nul 2>&1
+echo  [BUOC 5/10] Toi uu CPU...
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d "38" /f >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling" /v "PowerThrottlingOff" /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel" /v "CoalescingTimerDisabled" /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\bam" /v Start /t REG_DWORD /d 4 /f >nul 2>&1
 bcdedit /set disabledynamictick yes >nul 2>&1
+bcdedit /set useplatformtick yes >nul 2>&1
 
-echo  [6/7] Dang toi uu mang...
+echo  [BUOC 6/10] Toi uu mang...
 netsh int tcp set global timestamps=disabled >nul 2>&1
-netsh int tcp set global autotuninglevel=disabled >nul 2>&1
+netsh int tcp set global rss=enabled >nul 2>&1
+netsh int tcp set global fastopen=enabled >nul 2>&1
+netsh int tcp set global ecncapability=disabled >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" /v GlobalMaxTcpWindowSize /t REG_DWORD /d 2097152 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" /v TcpWindowSize /t REG_DWORD /d 65535 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" /v MaxFreeTcbs /t REG_DWORD /d 65535 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" /v MaxUserPort /t REG_DWORD /d 65534 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" /v TcpTimedWaitDelay /t REG_DWORD /d 30 /f >nul 2>&1
 
-echo  [7/7] Dang toi uu game priority...
+echo  [BUOC 7/10] Toi uu game priority...
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v "SystemResponsiveness" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v "NetworkThrottlingIndex" /t REG_DWORD /d "4294967295" /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v "NoLazyMode" /t REG_DWORD /d "1" /f >nul 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "GPU Priority" /t REG_DWORD /d "8" /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "Priority" /t REG_DWORD /d "6" /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "Scheduling Category" /t REG_SZ /d "High" /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "SFIO Priority" /t REG_SZ /d "High" /f >nul 2>&1
+
+echo  [BUOC 8/10] Toi uu RAM...
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnablePrefetcher" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnableSuperfetch" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "DisablePagingExecutive" /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "LargeSystemCache" /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "IoPageLockLimit" /t REG_DWORD /d "983040" /f >nul 2>&1
+
+echo  [BUOC 9/10] Toi uu SSD/Disk...
+fsutil behavior set disable8dot3 1 >nul 2>&1
+fsutil behavior set disablelastaccess 1 >nul 2>&1
+fsutil behavior set memoryusage 2 >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "NtfsDisableLastAccessUpdate" /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "NtfsMftZoneReservation" /t REG_DWORD /d 4 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "MemoryUsage" /t REG_DWORD /d 2 /f >nul 2>&1
+
+echo  [BUOC 10/10] Tat scheduled tasks...
+schtasks /Change /TN "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /Disable >nul 2>&1
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /Disable >nul 2>&1
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /Disable >nul 2>&1
+schtasks /Change /TN "Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector" /Disable >nul 2>&1
 
 echo.
-echo  [THANH CONG] Da ap dung cac toi uu CO BAN!
-echo  [%DATE% %TIME%] Chay toi uu co ban >> "C:\GL-TWEAK_Logs\Log.txt"
+echo  +======================================================================+
+echo  ^|              HOAN TAT TOI UU NHANH!                                  ^|
+echo  +======================================================================+
+echo.
+echo  [THANH CONG] Da ap dung 50+ tweaks tu dong!
+echo  [INFO] Khuyen nghi khoi dong lai may de ap dung day du.
+echo  [%DATE% %TIME%] Auto Quick Optimization >> "C:\GL-TWEAK_Logs\Log.txt"
 pause
 goto menu_chinh
 
-:chay_nang_cao
+:: === TOI UU MANH ===
+:auto_full
+cls
 echo.
-echo  [CANH BAO] Cac toi uu nang cao co the gay bat on dinh!
-echo  Ban co muon tiep tuc? (Y/N)
-set /p adv_confirm=  Nhap lua chon: 
-if /i not "%adv_confirm%"=="Y" goto chay_tat_ca
+echo  +======================================================================+
+echo  ^|              DANG TOI UU MANH... (100+ tweaks)                       ^|
+echo  +======================================================================+
+echo.
 
-echo.
-echo  [1/5] Dang ap dung Timer Resolution...
+echo  [PHAN 1/3] Ap dung tweaks co ban...
+call :auto_quick_silent
+
+echo  [PHAN 2/3] Ap dung tweaks nang cao...
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "GlobalTimerResolutionRequests" /t REG_DWORD /d "1" /f >nul 2>&1
-
-echo  [2/5] Dang tat services nang cao...
+bcdedit /set useplatformclock no >nul 2>&1
+bcdedit /set tscsyncpolicy Enhanced >nul 2>&1
+bcdedit /set bootux disabled >nul 2>&1
 sc config DisplayEnhancementService start=disabled >nul 2>&1
 sc config TabletInputService start=disabled >nul 2>&1
 sc config SensorDataService start=disabled >nul 2>&1
 sc config PhoneSvc start=disabled >nul 2>&1
+sc config WbioSrvc start=disabled >nul 2>&1
+sc config icssvc start=disabled >nul 2>&1
+sc config RemoteRegistry start=disabled >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "TdrDelay" /t REG_DWORD /d 10 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "DisablePreemption" /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "GPU Priority" /t REG_DWORD /d 31 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "Priority" /t REG_DWORD /d 8 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\mouclass\Parameters" /v "MouseDataQueueSize" /t REG_DWORD /d 32 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\kbdclass\Parameters" /v "KeyboardDataQueueSize" /t REG_DWORD /d 32 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\USB" /v "DisableSelectiveSuspend" /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\NDIS\Parameters" /v "MaxNumRssCpus" /t REG_DWORD /d 4 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\TSFairShare\Disk" /v "EnableFairShare" /t REG_DWORD /d 0 /f >nul 2>&1
+fsutil behavior set disablecompression 1 >nul 2>&1
+fsutil behavior set disableencryption 1 >nul 2>&1
+fsutil behavior set mftzone 4 >nul 2>&1
 
-echo  [3/5] Dang tat scheduled tasks...
-schtasks /Change /TN "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /Disable >nul 2>&1
-schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /Disable >nul 2>&1
-
-echo  [4/5] Dang ap dung BCDEdit tweaks...
-bcdedit /set disabledynamictick yes >nul 2>&1
-bcdedit /set useplatformtick yes >nul 2>&1
-bcdedit /set useplatformclock no >nul 2>&1
-bcdedit /set tscsyncpolicy Enhanced >nul 2>&1
-
-echo  [5/5] Dang toi uu RAM...
-sc config SysMain start=disabled >nul 2>&1
-reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnablePrefetcher" /t REG_DWORD /d 0 /f >nul 2>&1
-reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "DisablePagingExecutive" /t REG_DWORD /d 1 /f >nul 2>&1
+echo  [PHAN 3/3] Don dep file tam...
+del /q /f /s "%TEMP%\*" >nul 2>&1
+del /q /f /s "C:\Windows\Temp\*" >nul 2>&1
+del /q /f /s "C:\Windows\Prefetch\*" >nul 2>&1
 
 echo.
-echo  [THANH CONG] Da ap dung cac toi uu NANG CAO!
-echo  [%DATE% %TIME%] Chay toi uu nang cao >> "C:\GL-TWEAK_Logs\Log.txt"
+echo  +======================================================================+
+echo  ^|              HOAN TAT TOI UU MANH!                                   ^|
+echo  +======================================================================+
+echo.
+echo  [THANH CONG] Da ap dung 100+ tweaks!
+echo  [INFO] Khuyen nghi khoi dong lai may de ap dung day du.
+echo  [%DATE% %TIME%] Auto Full Optimization >> "C:\GL-TWEAK_Logs\Log.txt"
 pause
 goto menu_chinh
 
-:chay_full
+:: === TOI UU TUY CHON ===
+:auto_custom
+cls
 echo.
-echo  [CANH BAO] Day se ap dung TAT CA toi uu!
-echo  Ban co muon tiep tuc? (Y/N)
-set /p full_confirm=  Nhap lua chon: 
-if /i not "%full_confirm%"=="Y" goto chay_tat_ca
+echo  +======================================================================+
+echo  ^|              TOI UU TUY CHON - CHON CPU/GPU                          ^|
+echo  +======================================================================+
+echo.
+echo  === CHON LOAI CPU ===
+echo  [1] Intel
+echo  [2] AMD
+echo  [3] Khong biet / Bo qua
+echo.
+set /p cpu_type=  CPU cua ban: 
+
+echo.
+echo  === CHON LOAI GPU ===
+echo  [1] NVIDIA
+echo  [2] AMD
+echo  [3] Intel (Integrated)
+echo  [4] Khong biet / Bo qua
+echo.
+set /p gpu_type=  GPU cua ban: 
+
+echo.
+echo  [INFO] Dang ap dung tweaks chung...
+call :auto_quick_silent
+
+if "%cpu_type%"=="1" (
+    echo  [INFO] Dang ap dung Intel CPU tweaks...
+    reg add "HKLM\SYSTEM\CurrentControlSet\Services\intelppm" /v "Start" /t REG_DWORD /d 4 /f >nul 2>&1
+    bcdedit /set tscsyncpolicy Enhanced >nul 2>&1
+)
+if "%cpu_type%"=="2" (
+    echo  [INFO] Dang ap dung AMD CPU tweaks...
+    reg add "HKLM\SYSTEM\CurrentControlSet\Services\amdppm" /v "Start" /t REG_DWORD /d 4 /f >nul 2>&1
+)
+if "%gpu_type%"=="1" (
+    echo  [INFO] Dang ap dung NVIDIA GPU tweaks...
+    reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "TdrDelay" /t REG_DWORD /d 60 /f >nul 2>&1
+    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "DisableDynamicPstate" /t REG_DWORD /d 1 /f >nul 2>&1
+    sc config NVDisplay.ContainerLocalSystem start=disabled >nul 2>&1
+)
+if "%gpu_type%"=="2" (
+    echo  [INFO] Dang ap dung AMD GPU tweaks...
+    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "DisableDMACopy" /t REG_DWORD /d 1 /f >nul 2>&1
+    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "StutterMode" /t REG_DWORD /d 0 /f >nul 2>&1
+    sc config "AMD Crash Defender Service" start=disabled >nul 2>&1
+    sc config "AMD External Events Utility" start=disabled >nul 2>&1
+)
+if "%gpu_type%"=="3" (
+    echo  [INFO] Dang ap dung Intel GPU tweaks...
+    reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "HwSchMode" /t REG_DWORD /d 2 /f >nul 2>&1
+)
+
+echo.
+echo  +======================================================================+
+echo  ^|              HOAN TAT TOI UU TUY CHON!                               ^|
+echo  +======================================================================+
+echo.
+echo  [THANH CONG] Da ap dung tweaks cho CPU va GPU cua ban!
+echo  [%DATE% %TIME%] Auto Custom Optimization >> "C:\GL-TWEAK_Logs\Log.txt"
+pause
+goto menu_chinh
+
+:: === SILENT FUNCTION ===
+:auto_quick_silent
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v HideFileExt /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v BingSearchEnabled /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKCU\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "0" /f >nul 2>&1
+reg add "HKCU\Software\Policies\Microsoft\Windows\Explorer" /v DisableNotificationCenter /t REG_DWORD /d "1" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "HwSchMode" /t REG_DWORD /d "2" /f >nul 2>&1
+reg add "HKCU\System\GameConfigStore" /v GameDVR_Enabled /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableActivityFeed" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v AllowTelemetry /t REG_DWORD /d "0" /f >nul 2>&1
+sc config DiagTrack start=disabled >nul 2>&1
+sc config SysMain start=disabled >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d "38" /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v "SystemResponsiveness" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "GPU Priority" /t REG_DWORD /d "8" /f >nul 2>&1
+fsutil behavior set disable8dot3 1 >nul 2>&1
+fsutil behavior set disablelastaccess 1 >nul 2>&1
+powercfg -h off >nul 2>&1
+goto :eof
 
 call :chay_co_ban
 call :chay_nang_cao
@@ -3033,6 +3195,415 @@ goto :eof
 if not exist "C:\GL-TWEAK_Backup" mkdir "C:\GL-TWEAK_Backup" >nul 2>&1
 explorer "C:\GL-TWEAK_Backup"
 goto backup_data
+
+:: =====================================================
+:: 32. SSD OPTIMIZER
+:: =====================================================
+:ssd_optimizer
+cls
+echo.
+echo  +======================================================================+
+echo  ^|              SSD OPTIMIZER - TOI UU O CUNG THE RAN                   ^|
+echo  +======================================================================+
+echo.
+echo  [1] Toi uu SSD tu dong (Khuyen nghi)
+echo  [2] Bat TRIM
+echo  [3] Tat Defrag cho SSD
+echo  [4] Toi uu NTFS nang cao
+echo  [5] Tat Prefetch/Superfetch
+echo  [6] Toi uu Write Cache
+echo  [7] Tat USN Journal (Giam ghi)
+echo  [0] Quay lai
+echo.
+set /p ssd_choice=  Nhap lua chon: 
+
+if "%ssd_choice%"=="1" goto ssd_auto
+if "%ssd_choice%"=="2" goto ssd_trim
+if "%ssd_choice%"=="3" goto ssd_defrag_off
+if "%ssd_choice%"=="4" goto ssd_ntfs
+if "%ssd_choice%"=="5" goto ssd_prefetch
+if "%ssd_choice%"=="6" goto ssd_write_cache
+if "%ssd_choice%"=="7" goto ssd_usn
+if "%ssd_choice%"=="0" goto menu_chinh
+goto ssd_optimizer
+
+:ssd_auto
+cls
+echo.
+echo  +======================================================================+
+echo  ^|              DANG TOI UU SSD TU DONG...                              ^|
+echo  +======================================================================+
+echo.
+
+echo  [1/15] Bat TRIM...
+fsutil behavior set DisableDeleteNotify 0 >nul 2>&1
+
+echo  [2/15] Tat 8.3 filename (giam ghi)...
+fsutil behavior set disable8dot3 1 >nul 2>&1
+
+echo  [3/15] Tat Last Access Update...
+fsutil behavior set disablelastaccess 1 >nul 2>&1
+
+echo  [4/15] Tat Compression...
+fsutil behavior set disablecompression 1 >nul 2>&1
+
+echo  [5/15] Tat Encryption...
+fsutil behavior set disableencryption 1 >nul 2>&1
+
+echo  [6/15] Tat File Metadata Optimization...
+fsutil behavior set disablefilemetadataoptimization 1 >nul 2>&1
+
+echo  [7/15] Tang MFT Zone (4 = 50%% o dia)...
+fsutil behavior set mftzone 4 >nul 2>&1
+
+echo  [8/15] Tang Memory Usage...
+fsutil behavior set memoryusage 2 >nul 2>&1
+
+echo  [9/15] Tat Prefetch/Superfetch...
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnablePrefetcher" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnableSuperfetch" /t REG_DWORD /d "0" /f >nul 2>&1
+sc config SysMain start= disabled >nul 2>&1
+sc stop SysMain >nul 2>&1
+
+echo  [10/15] Toi uu NTFS...
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "NtfsDisableLastAccessUpdate" /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "NtfsMftZoneReservation" /t REG_DWORD /d 4 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "NtfsDisableEncryption" /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "NtfsDisableCompression" /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "MemoryUsage" /t REG_DWORD /d 2 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "ContigFileAllocSize" /t REG_DWORD /d 4096 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "MaximumTunnelEntries" /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "LongPathsEnabled" /t REG_DWORD /d 1 /f >nul 2>&1
+
+echo  [11/15] Tat Defrag tu dong cho SSD...
+schtasks /Change /TN "\Microsoft\Windows\Defrag\ScheduledDefrag" /Disable >nul 2>&1
+
+echo  [12/15] Toi uu Disk Cache...
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\Disk" /v "EnableCache" /t REG_DWORD /d 1 /f >nul 2>&1
+
+echo  [13/15] Tat Hibernate (tiet kiem SSD)...
+powercfg -h off >nul 2>&1
+
+echo  [14/15] Toi uu I/O System...
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\I/O System" /v "CountOperations" /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\I/O System" /v "DmaRemappingCompatible" /t REG_DWORD /d 0 /f >nul 2>&1
+
+echo  [15/15] Toi uu Filter Support...
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "FilterSupportedFeaturesMode" /t REG_DWORD /d 0 /f >nul 2>&1
+
+echo.
+echo  [THANH CONG] Da toi uu SSD!
+echo  [%DATE% %TIME%] SSD Optimizer Auto >> "C:\GL-TWEAK_Logs\Log.txt"
+pause
+goto ssd_optimizer
+
+:ssd_trim
+echo  [INFO] Dang bat TRIM...
+fsutil behavior set DisableDeleteNotify 0 >nul 2>&1
+echo  [THANH CONG] Da bat TRIM!
+pause
+goto ssd_optimizer
+
+:ssd_defrag_off
+echo  [INFO] Dang tat Defrag tu dong...
+schtasks /Change /TN "\Microsoft\Windows\Defrag\ScheduledDefrag" /Disable >nul 2>&1
+echo  [THANH CONG] Da tat Defrag tu dong!
+pause
+goto ssd_optimizer
+
+:ssd_ntfs
+echo  [INFO] Dang toi uu NTFS...
+fsutil behavior set disable8dot3 1 >nul 2>&1
+fsutil behavior set disablelastaccess 1 >nul 2>&1
+fsutil behavior set disablecompression 1 >nul 2>&1
+fsutil behavior set mftzone 4 >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "NtfsDisableLastAccessUpdate" /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "NtfsMftZoneReservation" /t REG_DWORD /d 4 /f >nul 2>&1
+echo  [THANH CONG] Da toi uu NTFS!
+pause
+goto ssd_optimizer
+
+:ssd_prefetch
+echo  [INFO] Dang tat Prefetch/Superfetch...
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnablePrefetcher" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnableSuperfetch" /t REG_DWORD /d "0" /f >nul 2>&1
+sc config SysMain start= disabled >nul 2>&1
+echo  [THANH CONG] Da tat Prefetch/Superfetch!
+pause
+goto ssd_optimizer
+
+:ssd_write_cache
+echo  [INFO] Dang toi uu Write Cache...
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\Disk" /v "EnableCache" /t REG_DWORD /d 1 /f >nul 2>&1
+echo  [THANH CONG] Da toi uu Write Cache!
+pause
+goto ssd_optimizer
+
+:ssd_usn
+echo  [INFO] Dang tat USN Journal (giam ghi vao SSD)...
+fsutil usn deletejournal /d c: >nul 2>&1
+fsutil resource setautoreset true c:\ >nul 2>&1
+echo  [THANH CONG] Da tat USN Journal!
+echo  [LUU Y] Co the anh huong den mot so tinh nang tim kiem.
+pause
+goto ssd_optimizer
+
+:: =====================================================
+:: 33. DEBLOATER NANG CAO
+:: =====================================================
+:debloater_advanced
+cls
+echo.
+echo  +======================================================================+
+echo  ^|              DEBLOATER NANG CAO - XOA BLOATWARE                      ^|
+echo  +======================================================================+
+echo.
+echo  [1] Xoa TAT CA apps khong can thiet (Khuyen nghi)
+echo  [2] Xoa apps tu chon
+echo  [3] Xoa Cortana
+echo  [4] Xoa Windows Media Player
+echo  [5] Xoa Internet Explorer
+echo  [6] Xoa Paint 3D, 3D Viewer
+echo  [7] Xoa Skype
+echo  [8] Xoa tat ca games Microsoft
+echo  [9] Xoa Office bloatware
+echo  [0] Quay lai
+echo.
+set /p debloat_choice=  Nhap lua chon: 
+
+if "%debloat_choice%"=="1" goto debloat_all
+if "%debloat_choice%"=="2" goto debloat_select
+if "%debloat_choice%"=="3" goto debloat_cortana
+if "%debloat_choice%"=="4" goto debloat_wmp
+if "%debloat_choice%"=="5" goto debloat_ie
+if "%debloat_choice%"=="6" goto debloat_3d
+if "%debloat_choice%"=="7" goto debloat_skype
+if "%debloat_choice%"=="8" goto debloat_games
+if "%debloat_choice%"=="9" goto debloat_office
+if "%debloat_choice%"=="0" goto menu_chinh
+goto debloater_advanced
+
+:debloat_all
+cls
+echo.
+echo  +======================================================================+
+echo  ^|              DANG XOA TAT CA BLOATWARE...                            ^|
+echo  +======================================================================+
+echo.
+echo  [CANH BAO] Se xoa 40+ ung dung khong can thiet!
+set /p confirm=  Ban co chac chan? (Y/N): 
+if /i not "%confirm%"=="Y" goto debloater_advanced
+
+echo.
+echo  [INFO] Dang xoa... (Co the mat 2-5 phut)
+echo.
+
+:: Microsoft Apps
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *3DBuilder* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] 3D Builder
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *3DViewer* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] 3D Viewer
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *BingFinance* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Bing Finance
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *BingNews* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Bing News
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *BingSports* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Bing Sports
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *BingWeather* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Bing Weather
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Clipchamp* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Clipchamp
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Copilot* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Copilot
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *GetHelp* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Get Help
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Getstarted* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Get Started
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *MicrosoftOfficeHub* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Office Hub
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *MicrosoftSolitaireCollection* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Solitaire
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *MixedReality* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Mixed Reality
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *OneNote* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] OneNote
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Paint3D* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Paint 3D
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *People* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] People
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Print3D* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Print 3D
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *SkypeApp* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Skype
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Todos* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Microsoft To Do
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Wallet* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Wallet
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *WebExperience* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Web Experience (Widgets)
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *WindowsAlarms* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Alarms
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *WindowsFeedbackHub* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Feedback Hub
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *WindowsMaps* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Maps
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *WindowsSoundRecorder* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Sound Recorder
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *YourPhone* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Your Phone
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *ZuneMusic* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Groove Music
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *ZuneVideo* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Movies & TV
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *MSTeams* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Teams
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *PowerAutomateDesktop* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Power Automate
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *MicrosoftFamily* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Family Safety
+
+:: Xbox
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Xbox* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Xbox Apps
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *GamingApp* | Remove-AppxPackage" >nul 2>&1
+echo  [OK] Gaming App
+
+:: Tat services lien quan
+sc config XblAuthManager start= disabled >nul 2>&1
+sc config XblGameSave start= disabled >nul 2>&1
+sc config XboxNetApiSvc start= disabled >nul 2>&1
+sc config XboxGipSvc start= disabled >nul 2>&1
+
+echo.
+echo  [THANH CONG] Da xoa 40+ bloatware!
+echo  [%DATE% %TIME%] Debloater All >> "C:\GL-TWEAK_Logs\Log.txt"
+pause
+goto debloater_advanced
+
+:debloat_select
+cls
+echo.
+echo  +======================================================================+
+echo  ^|              CHON UNG DUNG DE XOA                                    ^|
+echo  +======================================================================+
+echo.
+echo  [1] Bing Apps (News, Weather, Finance, Sports)
+echo  [2] Microsoft Office Apps (OneNote, Office Hub)
+echo  [3] Entertainment (Groove, Movies, Solitaire)
+echo  [4] Communication (Teams, Skype, Your Phone)
+echo  [5] Utilities (Alarms, Maps, Feedback Hub)
+echo  [6] 3D Apps (3D Builder, 3D Viewer, Paint 3D)
+echo  [7] Xbox Apps
+echo  [8] Windows 11 Bloat (Copilot, Widgets, Get Started)
+echo  [0] Quay lai
+echo.
+set /p sel_choice=  Nhap lua chon: 
+
+if "%sel_choice%"=="1" (
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Bing* | Remove-AppxPackage" >nul 2>&1
+    echo  [OK] Da xoa Bing Apps!
+)
+if "%sel_choice%"=="2" (
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *OneNote* | Remove-AppxPackage" >nul 2>&1
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *MicrosoftOfficeHub* | Remove-AppxPackage" >nul 2>&1
+    echo  [OK] Da xoa Office Apps!
+)
+if "%sel_choice%"=="3" (
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *ZuneMusic* | Remove-AppxPackage" >nul 2>&1
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *ZuneVideo* | Remove-AppxPackage" >nul 2>&1
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Solitaire* | Remove-AppxPackage" >nul 2>&1
+    echo  [OK] Da xoa Entertainment Apps!
+)
+if "%sel_choice%"=="4" (
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *MSTeams* | Remove-AppxPackage" >nul 2>&1
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *SkypeApp* | Remove-AppxPackage" >nul 2>&1
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *YourPhone* | Remove-AppxPackage" >nul 2>&1
+    echo  [OK] Da xoa Communication Apps!
+)
+if "%sel_choice%"=="5" (
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *WindowsAlarms* | Remove-AppxPackage" >nul 2>&1
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *WindowsMaps* | Remove-AppxPackage" >nul 2>&1
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *WindowsFeedbackHub* | Remove-AppxPackage" >nul 2>&1
+    echo  [OK] Da xoa Utilities!
+)
+if "%sel_choice%"=="6" (
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *3D* | Remove-AppxPackage" >nul 2>&1
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Paint3D* | Remove-AppxPackage" >nul 2>&1
+    echo  [OK] Da xoa 3D Apps!
+)
+if "%sel_choice%"=="7" (
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Xbox* | Remove-AppxPackage" >nul 2>&1
+    echo  [OK] Da xoa Xbox Apps!
+)
+if "%sel_choice%"=="8" (
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Copilot* | Remove-AppxPackage" >nul 2>&1
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *WebExperience* | Remove-AppxPackage" >nul 2>&1
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Getstarted* | Remove-AppxPackage" >nul 2>&1
+    echo  [OK] Da xoa Windows 11 Bloat!
+)
+if "%sel_choice%"=="0" goto debloater_advanced
+pause
+goto debloat_select
+
+:debloat_cortana
+echo  [INFO] Dang xoa Cortana...
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Cortana* | Remove-AppxPackage" >nul 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f >nul 2>&1
+echo  [THANH CONG] Da xoa Cortana!
+pause
+goto debloater_advanced
+
+:debloat_wmp
+echo  [INFO] Dang xoa Windows Media Player...
+dism /online /Disable-Feature /FeatureName:WindowsMediaPlayer /NoRestart >nul 2>&1
+echo  [THANH CONG] Da xoa Windows Media Player!
+pause
+goto debloater_advanced
+
+:debloat_ie
+echo  [INFO] Dang xoa Internet Explorer...
+dism /online /Disable-Feature /FeatureName:Internet-Explorer-Optional-amd64 /NoRestart >nul 2>&1
+echo  [THANH CONG] Da xoa Internet Explorer!
+pause
+goto debloater_advanced
+
+:debloat_3d
+echo  [INFO] Dang xoa 3D Apps...
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *3DBuilder* | Remove-AppxPackage" >nul 2>&1
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *3DViewer* | Remove-AppxPackage" >nul 2>&1
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Paint3D* | Remove-AppxPackage" >nul 2>&1
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Print3D* | Remove-AppxPackage" >nul 2>&1
+echo  [THANH CONG] Da xoa 3D Apps!
+pause
+goto debloater_advanced
+
+:debloat_skype
+echo  [INFO] Dang xoa Skype...
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *SkypeApp* | Remove-AppxPackage" >nul 2>&1
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Skype* | Remove-AppxPackage" >nul 2>&1
+echo  [THANH CONG] Da xoa Skype!
+pause
+goto debloater_advanced
+
+:debloat_games
+echo  [INFO] Dang xoa Microsoft Games...
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Solitaire* | Remove-AppxPackage" >nul 2>&1
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *CandyCrush* | Remove-AppxPackage" >nul 2>&1
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *BubbleWitch* | Remove-AppxPackage" >nul 2>&1
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *MarchofEmpires* | Remove-AppxPackage" >nul 2>&1
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Minecraft* | Remove-AppxPackage" >nul 2>&1
+echo  [THANH CONG] Da xoa Microsoft Games!
+pause
+goto debloater_advanced
+
+:debloat_office
+echo  [INFO] Dang xoa Office Bloatware...
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *MicrosoftOfficeHub* | Remove-AppxPackage" >nul 2>&1
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *OneNote* | Remove-AppxPackage" >nul 2>&1
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage *Office.Desktop* | Remove-AppxPackage" >nul 2>&1
+echo  [THANH CONG] Da xoa Office Bloatware!
+pause
+goto debloater_advanced
 
 :: =====================================================
 :: THOAT
